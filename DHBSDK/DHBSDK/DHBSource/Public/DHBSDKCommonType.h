@@ -32,6 +32,7 @@ typedef NS_ENUM(NSInteger,DHBSDKDownloadErrorCode) {
     DHBSDKDownloadErrorCodeBatteryLevelTooLow,      // 电量过低
     DHBSDKDownloadErrorCodeMD5CheckInvalidError,    // 文件校验失败
     DHBSDKDownloadErrorCodeResponseCodeNot200,      // 响应错误（状态码不为200）
+    DHBSDKDownloadErrorCodeDownloadException        // 下载异常
 };
 
 static NSString * const DHBSDKDownloadErrorDomain                   =   @"com.dhbsdk.download";

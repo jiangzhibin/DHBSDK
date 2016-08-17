@@ -94,8 +94,8 @@ static float const kProgressPercentDownload             = 0.75f;
  */
 - (void)setCityId:(NSString *)cityId {
     if (_cityId != cityId) {
-        _cityId = [cityId copy];
-        [[NSUserDefaults standardUserDefaults] setObject:cityId ?: @"0" forKey:kCityId];
+        _cityId = cityId ? [cityId copy] : @"0";
+        [[NSUserDefaults standardUserDefaults] setObject:_cityId forKey:kCityId];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
@@ -163,7 +163,6 @@ static float const kProgressPercentDownload             = 0.75f;
 #pragma mark - 摘取自YuloreAPI.m
 + (BOOL) registerInfoApikey:(NSString *)apikey
                   signature:(NSString *)signature
-                       host:(NSString *)host
                      {
     
     BOOL registered = NO;
@@ -177,7 +176,6 @@ static float const kProgressPercentDownload             = 0.75f;
     
     [DHBSDKApiManager shareManager].apiKey = apikey;
     [DHBSDKApiManager shareManager].signature = signature;
-    [DHBSDKApiManager shareManager].host = host;
     return registered;
     
 }
@@ -234,7 +232,8 @@ static float const kProgressPercentDownload             = 0.75f;
 + (BOOL) registerApp:(NSString *)apikey
            signature:(NSString *)signature
                 host:(NSString *)host
-//              cityId:(NSString *)cityId
+              cityId:(NSString *)cityId
+shareGroupIdentifier:(NSString *)shareGroupIdentifier
      completionBlock:(void (^)(NSError *error) )completionBlock {
     
     if (apikey == nil || [apikey isKindOfClass:[NSNull class]] || apikey.length < 4) {
@@ -243,7 +242,10 @@ static float const kProgressPercentDownload             = 0.75f;
         return NO;
     }
     BOOL needToUpdate = [DHBSDKStartLoadingService fetcherLastVersion];
-    BOOL registered = [self registerInfoApikey:apikey signature:signature host:host];
+    BOOL registered = [self registerInfoApikey:apikey signature:signature];
+    [DHBSDKApiManager shareManager].host = host;
+    [DHBSDKApiManager shareManager].shareGroupIdentifier = shareGroupIdentifier;
+    [DHBSDKApiManager shareManager].shareGroupIdentifier = cityId;
     if (!needToUpdate && registered) {
         if (![self existedFolder]) {
             [self copyInitDataCompletionBlock:^(NSError *error) {

@@ -30,16 +30,16 @@
 @implementation DHBSDKDownloadFetcher
 
 + (instancetype)sharedInstance {
-  
-  static DHBSDKDownloadFetcher *_sharedDownloadFetcher = nil;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-      _sharedDownloadFetcher = [[self alloc] init];
-      [[NSNotificationCenter defaultCenter] addObserver:_sharedDownloadFetcher selector:@selector(reachabilityStatusChanged:) name:kDHBSDKNotifReachabilityStatusChanged object:nil];
     
-  });
-  
-  return _sharedDownloadFetcher;
+    static DHBSDKDownloadFetcher *_sharedDownloadFetcher = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedDownloadFetcher = [[self alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:_sharedDownloadFetcher selector:@selector(reachabilityStatusChanged:) name:kDHBSDKNotifReachabilityStatusChanged object:nil];
+        
+    });
+    
+    return _sharedDownloadFetcher;
 }
 
 - (void)reachabilityStatusChanged:(NSNotification *)notif {
@@ -59,31 +59,31 @@
 }
 
 - (NSString *)targetPathWithType:(DHBDownloadPackageType)type {
-  
-  NSString *targetPath = nil;
-  switch (type) {
-    case DHBDownloadPackageTypeDelta:
-      targetPath = [DHBSDKFilePaths pathForDeltaOfflineFilePath];
-      break;
-      
-    case DHBDownloadPackageTypeFull:
-      targetPath = [DHBSDKFilePaths pathForFullOfflineFilePath];
-      break;
-      
-  }
-  
-  return targetPath;
+    
+    NSString *targetPath = nil;
+    switch (type) {
+        case DHBDownloadPackageTypeDelta:
+            targetPath = [DHBSDKFilePaths pathForDeltaOfflineFilePath];
+            break;
+            
+        case DHBDownloadPackageTypeFull:
+            targetPath = [DHBSDKFilePaths pathForFullOfflineFilePath];
+            break;
+            
+    }
+    
+    return targetPath;
 }
 
 
 - (NSString *)md5WithUpdateItem:(DHBSDKUpdateItem *)updateItem packageType:(DHBDownloadPackageType)packageType {
-  NSString *MD5 = nil;
-  if (packageType == DHBDownloadPackageTypeDelta) {
-    MD5 = updateItem.deltaMD5;
-  } else if (packageType == DHBDownloadPackageTypeFull) {
-     MD5 = updateItem.fullMD5;
-  }
-  return MD5;
+    NSString *MD5 = nil;
+    if (packageType == DHBDownloadPackageTypeDelta) {
+        MD5 = updateItem.deltaMD5;
+    } else if (packageType == DHBDownloadPackageTypeFull) {
+        MD5 = updateItem.fullMD5;
+    }
+    return MD5;
 }
 
 
@@ -128,7 +128,11 @@
             completionHandler(errorTmp);
             return;
         }
-        
+        if (error) {
+            NSError *errorTmp = [NSError errorWithDomain:DHBSDKDownloadErrorDomain code:DHBSDKDownloadErrorCodeDownloadException userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error,@"description", nil]];
+            completionHandler(errorTmp);
+            return;
+        }
         NSString *testMD5 = nil;
         if (packageType == DHBDownloadPackageTypeDelta) {
             testMD5 = self.updateItem.deltaMD5;
@@ -196,32 +200,32 @@
                      updateItem:(DHBSDKUpdateItem *)updateItem
                   progressBlock:(void (^)(double progress, long long totalBytes))progressBlock
               completionHandler:(void (^)(BOOL retry, NSError *error))completionHandler  {
-
+    
     self.updateItem = updateItem;
     [self downloadingWithType:packageType  progressBlock:^(double progress, long long totalBytes) {
         //进度回调
         progressBlock(progress, totalBytes);
-    
+        
     } completionHandler:^(NSError *error)
-    {
-        if (error) {
-            [self.updateItem failed];
-            completionHandler([self.updateItem isNeedRetry], error);
-        }
-        else {
-            [self afterDownloadingWithType:packageType completionHandler:^(NSError *error) {
-         
-             /**
-              *  如果没有异常重置次版本的版本报错记录
-              */
-                if (error == nil) {
-          
-                }
-                completionHandler([self.updateItem isNeedRetry], error);
-            }];
-        }
-   }];
-  
+     {
+         if (error) {
+             [self.updateItem failed];
+             completionHandler([self.updateItem isNeedRetry], error);
+         }
+         else {
+             [self afterDownloadingWithType:packageType completionHandler:^(NSError *error) {
+                 
+                 /**
+                  *  如果没有异常重置次版本的版本报错记录
+                  */
+                 if (error == nil) {
+                     
+                 }
+                 completionHandler([self.updateItem isNeedRetry], error);
+             }];
+         }
+     }];
+    
 }
 
 /**
@@ -230,87 +234,87 @@
  *  @param completionHandler completionHandler description
  */
 - (void)bspatchActionCompletionHandler:(void (^)(NSError *error))completionHandler  {
-  
-  NSString *oldFile = [DHBSDKFilePaths pathForFullOfflineFilePath];
-  
-  NSString *deltaFile = [DHBSDKFilePaths pathForDeltaOfflineFilePath];
-  
-  NSString *newFile = [DHBSDKFilePaths pathForPreOfflineFilePath];
-  
-  
-  [DHBbspatchOC DHBbspatchWithOldFile:oldFile newFile:newFile patchFile:deltaFile
-                    completionHandler:^(NSError *bspatchError)
-   {
-     if (bspatchError) {
-       completionHandler(bspatchError);
-       
-       return;
-     }
-
-     /**
-      *  1 check delta file md5 / 检查delta文件的MD5
-      */
-     NSString *md5 = self.updateItem.deltaMD5;
-     NSError *error = nil;
-     [deltaFile fileValidMD5WithMD5String:md5 error:&error];
-     
-     if (error) {
-       completionHandler(error);
-       
-       return;
-     }
-
-     /**
-      *  生成新文件的MD5
-      */
-     [newFile fileValidMD5WithMD5String:self.updateItem.fullMD5 error:&error];
-     if (error) {
-       
-       completionHandler(error);
     
-       return;
-     }
+    NSString *oldFile = [DHBSDKFilePaths pathForFullOfflineFilePath];
     
-     /**
-      *  2 文件更新
-      */
-     error = [DHBSDKDHBFileOperation errorWithFileUpdateOperation];
-
-       completionHandler(error);
-
-     
-   }];
-  
+    NSString *deltaFile = [DHBSDKFilePaths pathForDeltaOfflineFilePath];
+    
+    NSString *newFile = [DHBSDKFilePaths pathForPreOfflineFilePath];
+    
+    
+    [DHBbspatchOC DHBbspatchWithOldFile:oldFile newFile:newFile patchFile:deltaFile
+                      completionHandler:^(NSError *bspatchError)
+     {
+         if (bspatchError) {
+             completionHandler(bspatchError);
+             
+             return;
+         }
+         
+         /**
+          *  1 check delta file md5 / 检查delta文件的MD5
+          */
+         NSString *md5 = self.updateItem.deltaMD5;
+         NSError *error = nil;
+         [deltaFile fileValidMD5WithMD5String:md5 error:&error];
+         
+         if (error) {
+             completionHandler(error);
+             
+             return;
+         }
+         
+         /**
+          *  生成新文件的MD5
+          */
+         [newFile fileValidMD5WithMD5String:self.updateItem.fullMD5 error:&error];
+         if (error) {
+             
+             completionHandler(error);
+             
+             return;
+         }
+         
+         /**
+          *  2 文件更新
+          */
+         error = [DHBSDKDHBFileOperation errorWithFileUpdateOperation];
+         
+         completionHandler(error);
+         
+         
+     }];
+    
 }
 
 - (void)afterDownloadingWithType:(DHBDownloadPackageType)type
                completionHandler:(void (^)(NSError *error))completionHandler{
-  /**
-   *  bspatch
-   */
-    DHBSDKDLog(@"After Download");
-  if (type == DHBDownloadPackageTypeDelta) {
-    [self bspatchActionCompletionHandler:^(NSError *error) {
-      
-      if (error) {
-        [self.updateItem failed];
-      }
-      else {
-        //[DHBInitBusiness updateCurrentVersionWithItem:self.updateItem];
-      }
-      
-      completionHandler(error);
-    }];
-    
-  }
-  else {
     /**
-     *  更新版本
+     *  bspatch
      */
-    
-    //[DHBInitBusiness updateCurrentVersionWithItem:self.updateItem];
-    
-    completionHandler(nil);
-  }
+    DHBSDKDLog(@"After Download");
+    if (type == DHBDownloadPackageTypeDelta) {
+        [self bspatchActionCompletionHandler:^(NSError *error) {
+            
+            if (error) {
+                [self.updateItem failed];
+            }
+            else {
+                //[DHBInitBusiness updateCurrentVersionWithItem:self.updateItem];
+            }
+            
+            completionHandler(error);
+        }];
+        
+    }
+    else {
+        /**
+         *  更新版本
+         */
+        
+        //[DHBInitBusiness updateCurrentVersionWithItem:self.updateItem];
+        
+        completionHandler(nil);
+    }
 }
 @end

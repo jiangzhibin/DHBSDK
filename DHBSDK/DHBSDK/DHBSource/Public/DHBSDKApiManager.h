@@ -38,24 +38,7 @@
 /// 允许执行下载操作的网络类型(默认DHBSDKDownloadNetworkTypeWifiOnly)
 @property (nonatomic, assign) DHBSDKDownloadNetworkType downloadNetworkType;
 
-
-/**
- * 合并后的数据文件路径 （当前分1000个子文件)
- * 
- for (int i=0;i<1000;i++) {
-    @autoreleasepool {
-        NSString * filePathI=[[NSString alloc] initWithFormat:@"%@%d",filePath,i];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:filePathI])
-        {
-            NSLog(@"<<< %d >文件不存在:%@",i,filePathI);
-            break;
-        }
-        NSMutableDictionary *contentDict = [NSMutableDictionary dictionaryWithContentsOfFile:filePathI];
-        count += [[contentDict allKeys] count];
-        filePathI=nil;
-}
- */
-/// 合并后的数据文件路径
+/// 合并后的数据文件"BridgeFile"存放的路径
 @property (nonatomic, readonly) NSString *pathForBridgeOfflineFilePath;
 
 + (instancetype)shareManager;
@@ -68,12 +51,15 @@
  *  @param apikey    所需apikey
  *  @param signature 所需signature
  *  @param host      电话邦host https://apis-ios.dianhua.cn/
- *
+ *  @param cityId    用户所在城市id,    默认为@"0" 代表全部城市，用户修改城市后，需重新赋值
+ *  @param shareGroupIdentifier 宿主App和Extension数据共享的标记，形如group.xxx
  *  @return 是否设置成功
  */
 + (BOOL) registerApp:(NSString *)apikey
            signature:(NSString *)signature
                 host:(NSString *)host
+              cityId:(NSString *)cityId
+shareGroupIdentifier:(NSString *)shareGroupIdentifier
      completionBlock:(void (^)(NSError *error) )completionBlock;
 
 /**
@@ -117,10 +103,11 @@
 /**
  下载 全量/增量包
  
- @param updateItem        下载所需的信息model
- @param packageType          下载的数据类型
- @param progressBlock     进度回调
- @param completionHandler 下载结束回调，error == nil，则下载失败；error == nil,下载成功
+ @param updateItem          下载所需的信息model
+ @param packageType         下载的数据类型
+ @param progressBlock       进度回调
+ @param completionHandler   下载结束回调，error == nil，则下载失败；error == nil,下载成功
+ 
  */
 + (void)downloadDataWithUpdateItem:(DHBSDKUpdateItem *)updateItem
                           dataType:(DHBDownloadPackageType)packageType

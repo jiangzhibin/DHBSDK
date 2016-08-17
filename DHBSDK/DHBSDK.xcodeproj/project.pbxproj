@@ -94,7 +94,7 @@
 		BFF01E1D1D642F7300DEF35E /* OfflineDataHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D901D642EED00DEF35E /* OfflineDataHelper.h */; };
 		BFF01E1E1D642F7300DEF35E /* Commondef.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D931D642EED00DEF35E /* Commondef.h */; };
 		BFF01E1F1D642F7300DEF35E /* CommonTmp.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D941D642EED00DEF35E /* CommonTmp.h */; };
-		BFF01E201D642F7300DEF35E /* DHBSDKApiManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D951D642EED00DEF35E /* DHBSDKApiManager.h */; };
+		BFF01E201D642F7300DEF35E /* DHBSDKApiManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D951D642EED00DEF35E /* DHBSDKApiManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFF01E211D642F7300DEF35E /* DHBSDKCommonType.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D971D642EED00DEF35E /* DHBSDKCommonType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFF01E221D642F7300DEF35E /* DHBSDKMarkTeleHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D991D642EED00DEF35E /* DHBSDKMarkTeleHelper.h */; };
 		BFF01E231D642F7300DEF35E /* DHBSDKResolveFecherNew.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D9B1D642EED00DEF35E /* DHBSDKResolveFecherNew.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -530,6 +530,7 @@
 			files = (
 				BFF01E271D642F7300DEF35E /* DHBSDKNetworkManager.h in Headers */,
 				BFF01E241D642F7300DEF35E /* DHBSDKResolveItemNew.h in Headers */,
+				BFF01E201D642F7300DEF35E /* DHBSDKApiManager.h in Headers */,
 				BFF01E001D642F7300DEF35E /* DHBErrorHelper.h in Headers */,
 				BFF01E231D642F7300DEF35E /* DHBSDKResolveFecherNew.h in Headers */,
 				BFF01E211D642F7300DEF35E /* DHBSDKCommonType.h in Headers */,
@@ -579,7 +580,6 @@
 				BFF01E1D1D642F7300DEF35E /* OfflineDataHelper.h in Headers */,
 				BFF01E1E1D642F7300DEF35E /* Commondef.h in Headers */,
 				BFF01E1F1D642F7300DEF35E /* CommonTmp.h in Headers */,
-				BFF01E201D642F7300DEF35E /* DHBSDKApiManager.h in Headers */,
 				BFF01E221D642F7300DEF35E /* DHBSDKMarkTeleHelper.h in Headers */,
 				BFF01E251D642F7300DEF35E /* DHBSDKSignatureHelper.h in Headers */,
 				BFF01E261D642F7300DEF35E /* DHBSDKFilePaths.h in Headers */,
