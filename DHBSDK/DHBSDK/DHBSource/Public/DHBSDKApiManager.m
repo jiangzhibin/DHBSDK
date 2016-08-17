@@ -34,10 +34,10 @@ static NSString * const kDownloadNetworkType        = @"kDHBSDKDownloadNetworkTy
 static NSString * const kShareGroupIdentifier       = @"kShareGroupIdentifier";
 
 /*
-a)	数据下载完成，显示进度75%，进入校验流程
-b)	数据校验完成，显示90%，进入导入流程
-c)	数据校验失败，则进入校验失败界面，选择【重新下载】、【取消】
-*/
+ a)	数据下载完成，显示进度75%，进入校验流程
+ b)	数据校验完成，显示90%，进入导入流程
+ c)	数据校验失败，则进入校验失败界面，选择【重新下载】、【取消】
+ */
 static float const kProgressPercentDownload             = 0.75f;
 //static float const kProgressPercentDataValidate         = 0.90f;
 //static float const kProgressPercentDownloadPercent      = 1.0f;
@@ -48,17 +48,17 @@ static float const kProgressPercentDownload             = 0.75f;
 @end
 @implementation DHBSDKApiManager
 + (instancetype)shareManager {
-  static DHBSDKApiManager *apiManager;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-      apiManager = [DHBSDKApiManager new];
-      [apiManager initializeValues];
-      [[DHBSDKAFNetworkReachabilityManager sharedManager] startMonitoring];
-      [[DHBSDKAFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(DHBSDKAFNetworkReachabilityStatus status) {
-          [[NSNotificationCenter defaultCenter] postNotificationName:kDHBSDKNotifReachabilityStatusChanged object:@(status)];
-      }];
-  });
-  return apiManager;
+    static DHBSDKApiManager *apiManager;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        apiManager = [DHBSDKApiManager new];
+        [apiManager initializeValues];
+        [[DHBSDKAFNetworkReachabilityManager sharedManager] startMonitoring];
+        [[DHBSDKAFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(DHBSDKAFNetworkReachabilityStatus status) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kDHBSDKNotifReachabilityStatusChanged object:@(status)];
+        }];
+    });
+    return apiManager;
 }
 
 - (void)initializeValues {
@@ -89,7 +89,7 @@ static float const kProgressPercentDownload             = 0.75f;
 
 /**
  设置城市id
-
+ 
  @param cityId 城市id
  */
 - (void)setCityId:(NSString *)cityId {
@@ -102,7 +102,7 @@ static float const kProgressPercentDownload             = 0.75f;
 
 /**
  设置经纬度
-
+ 
  @param coordinate 经纬度
  */
 - (void)setCoordinate:(CLLocationCoordinate2D)coordinate {
@@ -118,7 +118,7 @@ static float const kProgressPercentDownload             = 0.75f;
 
 /**
  设置ApiKey
-
+ 
  @param apiKey apiKey
  */
 - (void)setApiKey:(NSString *)apiKey {
@@ -131,7 +131,7 @@ static float const kProgressPercentDownload             = 0.75f;
 
 /**
  设置Signature
-
+ 
  @param signature signature
  */
 - (void)setSignature:(NSString *)signature {
@@ -163,7 +163,7 @@ static float const kProgressPercentDownload             = 0.75f;
 #pragma mark - 摘取自YuloreAPI.m
 + (BOOL) registerInfoApikey:(NSString *)apikey
                   signature:(NSString *)signature
-                     {
+{
     
     BOOL registered = NO;
     
@@ -189,7 +189,9 @@ static float const kProgressPercentDownload             = 0.75f;
             dispatch_async(dispatch_get_main_queue(), ^{
                 // [StartLoadingService cacheCategoyDataFromInternet];
                 [DHBSDKStartLoadingService updateLastVersion];
-                completionBlock(nil);
+                if (completionBlock) {
+                    completionBlock(nil);
+                }
             });
         }];
         
@@ -238,7 +240,9 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
     
     if (apikey == nil || [apikey isKindOfClass:[NSNull class]] || apikey.length < 4) {
         NSError *error = [NSError errorWithDomain:@"apikey无效" code:-1 userInfo:nil];
-        completionBlock(error);
+        if (completionBlock) {
+            completionBlock(error);
+        }
         return NO;
     }
     BOOL needToUpdate = [DHBSDKStartLoadingService fetcherLastVersion];
@@ -249,16 +253,23 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
     if (!needToUpdate && registered) {
         if (![self existedFolder]) {
             [self copyInitDataCompletionBlock:^(NSError *error) {
-                completionBlock(error);
+                if (completionBlock) {
+                    completionBlock(error);
+                }
             }];
         }
         else {
-            completionBlock(nil);
+            if (completionBlock) {
+                completionBlock(nil);
+            }
         }
     }
     else {
         [self copyInitDataCompletionBlock:^(NSError *error) {
-            completionBlock(error);
+            if (completionBlock) {
+                completionBlock(error);
+            }
+            
         }];
     }
     return YES;
@@ -273,11 +284,11 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
  */
 + (void)searchTeleNumber:(nonnull NSString *)teleNumber
        completionHandler:(void (^)(DHBSDKResolveItemNew *resolveItem, NSError *error))completionHandler {
-        [[DHBSDKResolveFecherNew sharedResolveFecherNew] resolveFectcherWithTelephoneNumber:teleNumber completionHandler:^(DHBSDKResolveItemNew *resolveItem, NSError *error) {
-            if (completionHandler) {
-                completionHandler(resolveItem,error);
-            }
-        }];
+    [[DHBSDKResolveFecherNew sharedResolveFecherNew] resolveFectcherWithTelephoneNumber:teleNumber completionHandler:^(DHBSDKResolveItemNew *resolveItem, NSError *error) {
+        if (completionHandler) {
+            completionHandler(resolveItem,error);
+        }
+    }];
 }
 
 /**
@@ -300,7 +311,9 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
  */
 + (void)dataInfoFetcherCompletionHandler:(void(^)(DHBSDKUpdateItem *updateItem, NSError *error))completionHandler {
     [[DHBSDKDataFetcher sharedInstance] dataFetcherCompletionHandler:^(DHBSDKUpdateItem *updateItem, NSError *error) {
-        completionHandler(updateItem,error);
+        if (completionHandler) {
+            completionHandler(updateItem,error);
+        }
     }];
 }
 
@@ -318,7 +331,9 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
                  completionHandler:(void(^)(NSError *error))completionHandler {
     if (updateItem == nil) {
         NSError *error = [NSError errorWithDomain:@"downloadDataWithUpdateItem 传入的 updateItem为空" code:-1 userInfo:nil];
-        completionHandler(error);
+        if (completionHandler) {
+            completionHandler(error);
+        }
         return;
     }
     
@@ -329,27 +344,30 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
     if (networkType == DHBSDKNetworkTypeNotReachable) {
         // 无网状态 提示连接网络
         error = [NSError errorWithDomain:DHBSDKDownloadErrorDomain code:DHBSDKDownloadErrorCodeNetworkNotReachable userInfo:@{@"description":@"下载失败：网络不可用"}];
-        completionHandler(error);
-        return;
     }
     if (downloadNetworkType == DHBSDKDownloadNetworkTypeNotAllow) {
         // 未允许下载 提示打开下载
         error = [NSError errorWithDomain:DHBSDKDownloadErrorDomain code:DHBSDKDownloadErrorCodeNotAllow userInfo:@{@"description":@"下载失败：用户已设置不允许下载"}];
-        completionHandler(error);
-        return;
     }
     if (networkType == DHBSDKNetworkTypeViaWWAN
         && downloadNetworkType == DHBSDKDownloadNetworkTypeWifiOnly) {
         // 未打开数据流量下载
         error = [NSError errorWithDomain:DHBSDKDownloadErrorDomain code:DHBSDKDownloadErrorCodeWWANDownloadNotAllow userInfo:@{@"description":@"下载失败：当前为3G/4G网络，用户仅允许WiFi下载"}];
-        completionHandler(error);
+    }
+    if (error) {
+        if (completionHandler) {
+            completionHandler(error);
+        }
         return;
     }
+    
     NSError *batteryLevelError = [DHBErrorHelper errorWithBatteryLevel];
     if (batteryLevelError) {
         // 电量过低
         error = [NSError errorWithDomain:DHBSDKDownloadErrorDomain code:DHBSDKDownloadErrorCodeBatteryLevelTooLow userInfo:@{@"description":@"下载失败：当前电量过低，不允许下载"}];
-        completionHandler(error);
+        if (completionHandler) {
+            completionHandler(error);
+        }
         return;
     }
     
@@ -359,7 +377,9 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
         progressBlock(progress * kProgressPercentDownload);
     } completionHandler:^(BOOL retry, NSError *error) {
         if (error) {
-            completionHandler(error);
+            if (completionHandler) {
+                completionHandler(error);
+            }
             return ;
         }
         
@@ -367,9 +387,13 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
         dispatch_queue_t q = dispatch_queue_create("com.dhbsdk.callerid.dataloader", 0);
         dispatch_async(q, ^{
             [[DHBSDKCovertIndexContent sharedInstance] readDataFromFile:^(float progress) {
-                progressBlock(kProgressPercentDownload + progress * (1 - kProgressPercentDownload)+0.005);
+                if (progressBlock) {
+                    progressBlock(kProgressPercentDownload + progress * (1 - kProgressPercentDownload)+0.005);
+                }
             } completionHandler:^(NSError *error) {
-                completionHandler(error);
+                if (completionHandler) {
+                    completionHandler(error);
+                }
             }];
         });
     }];
