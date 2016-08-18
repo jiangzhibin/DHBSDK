@@ -28,7 +28,10 @@
 /// 电话邦host https://apis-ios.dianhua.cn/
 @property (nonatomic, copy) NSString *host;
 
-/// iOS10以上 实现来电识别功能时，必须设置此参数，用于宿主App和Extension的数据共享；无此需求可不设置 任何iOS版本，设置此属性后，号码的数据文件 将存储到共享容器中。不设置，则存储到Document目录中。（点击Project->主target->Capablities -> App Groups 打开开关，并勾选app groups，被勾选的group名字，就是shareGroupIdentifier应该设置的值
+/** 1.iOS10以上 实现来电识别功能时，必须设置此参数，用于宿主App和Extension的数据共享；
+ 2.无此需求可不设置 任何iOS版本，设置此属性后，号码的数据文件 将存储到共享容器中。
+ 3.不设置，则存储到Document目录中。（点击Project->主target->Capablities -> App Groups 打开开关，并勾选app groups，被勾选的group名字，就是shareGroupIdentifier应该设置的值)。
+ */
 @property (nonatomic, copy) NSString *shareGroupIdentifier;
 
 #pragma mark - 可选
@@ -38,7 +41,14 @@
 /// 允许执行下载操作的网络类型(默认DHBSDKDownloadNetworkTypeWifiOnly)
 @property (nonatomic, assign) DHBSDKDownloadNetworkType downloadNetworkType;
 
-/// 合并后的数据文件"BridgeFile"存放的路径
+/**
+ 1.处理后可进行json解析的数据文件路径 (注，根据数据量，会生成1至1000个小文件(Json格式，最外围是字典).使用时，应当解析小文件。
+ 小文件的格式 [pathForBridgeOfflineFilePath stringByAppendingFormat:@"%d",1至1000] （详见示例代码）
+ 2.不需要同Extension进行数据共享的，直接用pathForBridgeOfflineFilePath便可获得文件路径，故可以忽略本条说明。
+ 同Extension进行数据共享，默认你已经设置过shareGroupIdentifier属性，此时文件路径是：
+ NSString *sharePath = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:你设置的shareGroupIdentifier].path;
+ NSString *filePath = [sharePath stringByAppendingString:@"/BridgeFile"];
+ */
 @property (nonatomic, readonly) NSString *pathForBridgeOfflineFilePath;
 
 + (instancetype)shareManager;
@@ -72,12 +82,12 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
 #pragma mark - 号码查询及标记
 /**
  查询号码信息
-
+ 
  @param teleNumber        号码
  @param completionHandler 查询结果回调
  */
 + (void)searchTeleNumber:(NSString *)teleNumber
-           completionHandler:(void (^)( DHBSDKResolveItemNew *resolveItem, NSError *error) )completionHandler;
+       completionHandler:(void (^)( DHBSDKResolveItemNew *resolveItem, NSError *error) )completionHandler;
 
 /**
  在线标记号码
