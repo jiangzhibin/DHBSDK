@@ -12,8 +12,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import "DHBSDKCommonType.h"
 
-@class DHBSDKUpdateItem;
-@class DHBSDKResolveItemNew;
+#import "DHBSDKUpdateItem.h"
+#import "DHBSDKResolveItemNew.h"
 
 @interface DHBSDKApiManager : NSObject
 

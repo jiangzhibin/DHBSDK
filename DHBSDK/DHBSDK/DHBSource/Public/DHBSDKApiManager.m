@@ -17,8 +17,6 @@
 #import "DHBSDKCovertIndexContent.h"
 #import "DHBSDKAFNetworking.h"
 #import "DHBSDKNetworkManager.h"
-#import "DHBSDKUpdateItem.h"
-#import "DHBSDKResolveItemNew.h"
 #import "DHBErrorHelper.h"
 
 /// ApiKey & Signature

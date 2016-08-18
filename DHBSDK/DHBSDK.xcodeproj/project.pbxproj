@@ -76,7 +76,7 @@
 		BFF01E0B1D642F7300DEF35E /* DHBSDKPromotionItem.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D6A1D642EED00DEF35E /* DHBSDKPromotionItem.h */; };
 		BFF01E0C1D642F7300DEF35E /* DHBSDKResolveDataFile.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D6C1D642EED00DEF35E /* DHBSDKResolveDataFile.h */; };
 		BFF01E0D1D642F7300DEF35E /* DHBSDKServicesItem.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D6E1D642EED00DEF35E /* DHBSDKServicesItem.h */; };
-		BFF01E0E1D642F7300DEF35E /* DHBSDKUpdateItem.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D701D642EED00DEF35E /* DHBSDKUpdateItem.h */; };
+		BFF01E0E1D642F7300DEF35E /* DHBSDKUpdateItem.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D701D642EED00DEF35E /* DHBSDKUpdateItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFF01E0F1D642F7300DEF35E /* DHBSDKURLSessionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D721D642EED00DEF35E /* DHBSDKURLSessionManager.h */; };
 		BFF01E101D642F7300DEF35E /* DHBSDKYP_ASIDataDecompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D741D642EED00DEF35E /* DHBSDKYP_ASIDataDecompressor.h */; };
 		BFF01E111D642F7300DEF35E /* NSDictionary+DHBSDKSignature.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF01D761D642EED00DEF35E /* NSDictionary+DHBSDKSignature.h */; };
@@ -531,6 +531,7 @@
 				BFF01E271D642F7300DEF35E /* DHBSDKNetworkManager.h in Headers */,
 				BFF01E241D642F7300DEF35E /* DHBSDKResolveItemNew.h in Headers */,
 				BFF01E201D642F7300DEF35E /* DHBSDKApiManager.h in Headers */,
+				BFF01E0E1D642F7300DEF35E /* DHBSDKUpdateItem.h in Headers */,
 				BFF01E001D642F7300DEF35E /* DHBErrorHelper.h in Headers */,
 				BFF01E231D642F7300DEF35E /* DHBSDKResolveFecherNew.h in Headers */,
 				BFF01E211D642F7300DEF35E /* DHBSDKCommonType.h in Headers */,
@@ -562,7 +563,6 @@
 				BFF01E0B1D642F7300DEF35E /* DHBSDKPromotionItem.h in Headers */,
 				BFF01E0C1D642F7300DEF35E /* DHBSDKResolveDataFile.h in Headers */,
 				BFF01E0D1D642F7300DEF35E /* DHBSDKServicesItem.h in Headers */,
-				BFF01E0E1D642F7300DEF35E /* DHBSDKUpdateItem.h in Headers */,
 				BFF01E0F1D642F7300DEF35E /* DHBSDKURLSessionManager.h in Headers */,
 				BFF01E101D642F7300DEF35E /* DHBSDKYP_ASIDataDecompressor.h in Headers */,
 				BFF01E111D642F7300DEF35E /* NSDictionary+DHBSDKSignature.h in Headers */,
