@@ -92,9 +92,9 @@
                                 }
                                 if ([[telNumber substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"0"])
                                 {
-                                    [hotTeleNumberList setObject:label forKey:[[NSString alloc] initWithFormat:@"+86%@",[telNumber substringFromIndex:1]]];
+                                    [hotTeleNumberList setObject:label forKey:[[NSString alloc] initWithFormat:@"86%@",[telNumber substringFromIndex:1]]];
                                 } else {
-                                    [hotTeleNumberList setObject:label forKey:[[NSString alloc] initWithFormat:@"+86%@",telNumber]];
+                                    [hotTeleNumberList setObject:label forKey:[[NSString alloc] initWithFormat:@"86%@",telNumber]];
                                 }
                             }
                         }
@@ -159,15 +159,6 @@
         NSString * filePathI=[[NSString alloc] initWithFormat:@"%@%ld",filePath,(long)(i/SPLIT_SIZE)];
         NSMutableDictionary * subList = [[NSMutableDictionary alloc] initWithCapacity:SPLIT_SIZE];
         
-        NSCharacterSet *characterSet = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
-        NSMutableDictionary *newList = [[NSMutableDictionary alloc] initWithCapacity:SPLIT_SIZE];
-        // 去除号码中的'+'
-        for (NSString *key in list.allKeys) {
-            NSString *newKey = [key stringByTrimmingCharactersInSet:characterSet];
-            [newList setObject:list[key] forKey:newKey];
-        }
-        list = newList;
-        
         NSArray * keys = [list allKeys];
         // 按整型排序
         keys = [keys sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
@@ -187,7 +178,6 @@
         for (NSString * key in keys)
         {
             [subList setObject:[self tagLabelFromTagID:[list objectForKey:key]] forKey:key];
-            //            printf("\n%s",[key UTF8String]);
             if (i%SPLIT_SIZE==SPLIT_SIZE-1){
                 [subList writeToFile:filePathI atomically:YES];
                 //                NSLog(@"store resolve %d: %@",i,filePathI);
