@@ -22,36 +22,36 @@
 
 //
 - (NSString *)dataFileInfo {
-  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-  // [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-  dateFormatter.locale = [NSLocale currentLocale];
-  NSString *showtimeNew = [NSDateFormatter localizedStringFromDate:self.dataVersionDate dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
-  NSString *displayInfo = [NSString stringWithFormat:@"Current Version: %@", showtimeNew];
-  return displayInfo;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    // [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    dateFormatter.locale = [NSLocale currentLocale];
+    NSString *showtimeNew = [NSDateFormatter localizedStringFromDate:self.dataVersionDate dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+    NSString *displayInfo = [NSString stringWithFormat:@"Current Version: %@", showtimeNew];
+    return displayInfo;
 }
 
 + (instancetype)sharedInstance {
-  static DHBSDKCovertIndexContent *_sharedInstance = nil;
-  static dispatch_once_t onceToken;
-  
-  dispatch_once(&onceToken, ^{
-    _sharedInstance = [[DHBSDKCovertIndexContent alloc] init];
-  });
-  
-  return _sharedInstance;
+    static DHBSDKCovertIndexContent *_sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[DHBSDKCovertIndexContent alloc] init];
+    });
+    
+    return _sharedInstance;
 }
 
 - (instancetype)init {
-  self = [super init];
-  
-  if (self) {
-    _resolveDataFile = [[DHBSDKResolveDataFile alloc] init];
-    _dataVersionDate = [NSDate dateWithTimeIntervalSince1970:_resolveDataFile.timeStamp];
-    _currentVersion = _resolveDataFile.currentVersion;
-    NSLog(@"init version %@ %ld", _dataVersionDate ,_currentVersion);
-  }
-  
-  return self;
+    self = [super init];
+    
+    if (self) {
+        _resolveDataFile = [[DHBSDKResolveDataFile alloc] init];
+        _dataVersionDate = [NSDate dateWithTimeIntervalSince1970:_resolveDataFile.timeStamp];
+        _currentVersion = _resolveDataFile.currentVersion;
+        NSLog(@"init version %@ %ld", _dataVersionDate ,_currentVersion);
+    }
+    
+    return self;
 }
 
 - (void)loadHotCategoryNumbersComplete:(void(^)(NSDictionary *hotTeleNumberList))completeBlock {
@@ -62,13 +62,13 @@
         completeBlock([self getHotTelNumberListWithCategoryItems:categoryItems]);
     } updateFromServerCompletionHandler:^(NSMutableArray *allHotCategories, NSMutableArray *allServices, NSMutableArray *allLocalServices, NSMutableArray *allNeabys, NSMutableArray *allPromotions, NSError *error) {
         /*
-        NSMutableArray *categoryItems = [NSMutableArray new];
-        [categoryItems addObjectsFromArray:allHotCategories];
-        [categoryItems addObjectsFromArray:allLocalServices];
-        completeBlock([self getHotTelNumberListWithCategoryItems:categoryItems]);
+         NSMutableArray *categoryItems = [NSMutableArray new];
+         [categoryItems addObjectsFromArray:allHotCategories];
+         [categoryItems addObjectsFromArray:allLocalServices];
+         completeBlock([self getHotTelNumberListWithCategoryItems:categoryItems]);
          */
     }];
-
+    
 }
 
 - (NSDictionary *)getHotTelNumberListWithCategoryItems:(NSArray *)categoryItems {
@@ -137,7 +137,7 @@
     NSString *filePath = [DHBSDKFilePaths pathForBridgeOfflineFilePath];
     
     [self loadHotCategoryNumbersComplete:^(NSDictionary *hotList) {
-//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        //        dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSArray * hotListKeys=[hotList allKeys];
         for (NSString * key in hotListKeys){
             [list setObject:[hotList objectForKey:key] forKey:key];
@@ -161,14 +161,15 @@
         NSArray * keys = [list allKeys];
         
         keys = [keys sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
-        
+        NSCharacterSet *characterSet = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
         for (NSString * key in keys)
         {
-            [subList setObject:[self tagLabelFromTagID:[list objectForKey:key]] forKey:key];
+            NSString *newKey = [key stringByTrimmingCharactersInSet:characterSet];
+            [subList setObject:[self tagLabelFromTagID:[list objectForKey:key]] forKey:newKey];
             
             if (i%SPLIT_SIZE==SPLIT_SIZE-1){
                 [subList writeToFile:filePathI atomically:YES];
-                //NSLog(@"store resolve %d: %@",i,filePathI);
+                //                NSLog(@"store resolve %d: %@",i,filePathI);
                 [subList removeAllObjects];
                 filePathI=[[NSString alloc] initWithFormat:@"%@%ld",filePath,(long)((i+1)/SPLIT_SIZE)];
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -181,9 +182,9 @@
             [subList writeToFile:filePathI atomically:YES];
             [subList removeAllObjects];
         }
-//    });
-       
-
+        //    });
+        
+        
     }];
 }
 
@@ -222,15 +223,15 @@
 }
 
 - (NSData *)mappedData {
-  _mappedData = [_resolveDataFile mappedData];
-  
-  return _mappedData;
+    _mappedData = [_resolveDataFile mappedData];
+    
+    return _mappedData;
 }
 
 - (NSDictionary *)indexContent {
-  _indexContent = [_resolveDataFile resolveOffsetDictionary];
-  
-  return _indexContent;
+    _indexContent = [_resolveDataFile resolveOffsetDictionary];
+    
+    return _indexContent;
 }
 
 @end

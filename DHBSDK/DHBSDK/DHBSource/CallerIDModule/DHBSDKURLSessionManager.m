@@ -14,7 +14,15 @@
     static DHBSDKURLSessionManager *manager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        manager = [DHBSDKURLSessionManager new];
+        NSURLSessionConfiguration *config;
+        NSString *identifier = @"com.dhbsdk.dhbsdkurlsessionmanager";
+        if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+            config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+        }
+        else {
+            config = [NSURLSessionConfiguration backgroundSessionConfiguration:identifier];
+        }
+        manager = [[DHBSDKURLSessionManager alloc] initWithSessionConfiguration:config];
     });
     return manager;
 }

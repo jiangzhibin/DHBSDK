@@ -247,7 +247,7 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
     BOOL registered = [self registerInfoApikey:apikey signature:signature];
     [DHBSDKApiManager shareManager].host = host;
     [DHBSDKApiManager shareManager].shareGroupIdentifier = shareGroupIdentifier;
-    [DHBSDKApiManager shareManager].shareGroupIdentifier = cityId;
+    [DHBSDKApiManager shareManager].cityId = cityId;
     if (!needToUpdate && registered) {
         if (![self existedFolder]) {
             [self copyInitDataCompletionBlock:^(NSError *error) {
