@@ -43,7 +43,7 @@
 
 /**
  1.处理后可进行json解析的数据文件路径 (注，根据数据量，会生成1至1000个小文件(Json格式，最外围是字典).使用时，应当解析小文件。
- 小文件的格式 [pathForBridgeOfflineFilePath stringByAppendingFormat:@"%d",1至1000] （详见示例代码）
+ 小文件路径的格式 [pathForBridgeOfflineFilePath stringByAppendingFormat:@"%d",1至1000]
  2.不需要同Extension进行数据共享的，直接用pathForBridgeOfflineFilePath便可获得文件路径，故可以忽略本条说明。
  同Extension进行数据共享，默认你已经设置过shareGroupIdentifier属性，此时文件路径是：
  NSString *sharePath = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:你设置的shareGroupIdentifier].path;
