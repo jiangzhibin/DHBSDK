@@ -29,7 +29,6 @@ typedef NS_ENUM(NSInteger,DHBSDKDownloadErrorCode) {
     DHBSDKDownloadErrorCodeNetworkNotReachable,     // 网络不支持
     DHBSDKDownloadErrorCodeNotAllow,                // 不允许下载
     DHBSDKDownloadErrorCodeWWANDownloadNotAllow,    // 未开启3G/4G下载
-    DHBSDKDownloadErrorCodeBatteryLevelTooLow,      // 电量过低
     DHBSDKDownloadErrorCodeMD5CheckInvalidError,    // 文件校验失败
     DHBSDKDownloadErrorCodeResponseCodeNot200,      // 响应错误（状态码不为200）
     DHBSDKDownloadErrorCodeDownloadException        // 下载异常

@@ -359,16 +359,16 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
         return;
     }
     
-    NSError *batteryLevelError = [DHBErrorHelper errorWithBatteryLevel];
-    if (batteryLevelError) {
-        // 电量过低
-        error = [NSError errorWithDomain:DHBSDKDownloadErrorDomain code:DHBSDKDownloadErrorCodeBatteryLevelTooLow userInfo:@{@"description":@"下载失败：当前电量过低，不允许下载"}];
-        if (completionHandler) {
-            completionHandler(error);
-        }
-        return;
-    }
-    
+    //    NSError *batteryLevelError = [DHBErrorHelper errorWithBatteryLevel];
+    //    if (batteryLevelError) {
+    //        // 电量过低
+    //        error = [NSError errorWithDomain:DHBSDKDownloadErrorDomain code:DHBSDKDownloadErrorCodeBatteryLevelTooLow userInfo:@{@"description":@"下载失败：当前电量过低，不允许下载"}];
+    //        if (completionHandler) {
+    //            completionHandler(error);
+    //        }
+    //        return;
+    //    }
+    //
     
     // 下载
     [[DHBSDKDownloadFetcher sharedInstance] baseDownloadingWithType:packageType updateItem:updateItem progressBlock:^(double progress, long long totalBytes) {
