@@ -16,15 +16,28 @@
 
 @property (nonatomic, copy) NSDate *version;
 
-
+/// 更新包下载地址（若无更新包可用，则这个属性值为空）
 @property (nonatomic, copy) NSString *deltaDownloadPath;
+
+/// 更新包Hash (若无更新包可用，则这个属性值为空)
 @property (nonatomic, copy) NSString *deltaMD5;
+
+/// 更新包大小（字节）(若无更新包可用，则这个属性值为为0)
 @property (nonatomic, assign) NSInteger deltaSize;
+
+/// 更新包版本 (若无更新包可用，则这个属性值为0)
 @property (nonatomic, assign) NSInteger deltaVersion;
 
+/// 全量包下载地址 (若无全量包可用，则这个属性值为空)
 @property (nonatomic, copy) NSString *fullDownloadPath;
+
+/// 全量包Hash (若无全量包可用，则这个属性值为空)
 @property (nonatomic, copy) NSString *fullMD5;
+
+/// 全量包大小（字节）(若无全量包可用，则这个属性值为0)
 @property (nonatomic, assign) NSInteger fullSize;
+
+/// 全量包版本 (若无全量包可用，则这个属性值为0)
 @property (nonatomic, assign) NSInteger fullVersion;
 
 

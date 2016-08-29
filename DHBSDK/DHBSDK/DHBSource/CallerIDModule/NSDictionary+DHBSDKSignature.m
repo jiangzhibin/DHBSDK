@@ -7,87 +7,90 @@
 //
 
 #import "NSDictionary+DHBSDKSignature.h"
+#import "DHBSDKApiManager.h"
 
-#define kPassword @"nsFwF52FnwvbdjynaqmfKlyb7Tq8eqAlqKhyXoWBvkvag0H1zKFFETY6Ez4saafzTxsqpuRnm4SQaqdKj4khxFAkbaxppCJidgQw2ojFpm4WpUutqcpNuPoFad0xcpZwrgxizszkthcmxq1brXtozwCpDm5xcoTCygLdu"
 #import <CommonCrypto/CommonCrypto.h>
 @implementation NSDictionary (DHBSDKSignature)
 - (NSString *)signature {
-
-  NSString *dataVersion = [self objectForKey:@"data_ver"];
-  NSString *uid = [self objectForKey:@"uid"];
-  NSString *appName = [self objectForKey:@"app"];
-  NSString *apiVersion = [self objectForKey:@"v"];
-  NSString *version = [self objectForKey:@"ver"];
-  NSString *OSversion = @"";
-  
-  NSMutableArray *subArray = [self arrayWithSubPassword];
-  
-  //substr($pwd,53,2).
-  //$data_ver.
-  //substr($pwd,55,4).
-  //$uid.
-  //substr($pwd,59,3).
-  //$app.
-  //substr($pwd,62,1).
-  //$ver.
-  //substr($pwd,63,3).
-  //$api_ver.
-  //substr($pwd,66,3).
-  //$os_ver.
-  //substr($pwd,69,2)
-
-  NSString *sig = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@%@%@%@%@%@", subArray[0], dataVersion, subArray[1], uid, subArray[2], appName, subArray[3], version, subArray[4], apiVersion, subArray[5], OSversion, subArray[6]];
-  
-  NSString *sha1String = sha1(sig.UTF8String); //
-
-  return [sha1String substringWithRange:NSMakeRange(1, 32)];
+    
+    NSString *uid = [self objectForKey:@"uid"];
+    NSString *appName = [self objectForKey:@"app"];
+    NSString *version = [self objectForKey:@"ver"];
+    NSString *inithot_ver = [self objectForKey:@"inithot_ver"];
+    if (inithot_ver==nil)
+        inithot_ver=@"";
+    NSString *mobileloc_ver = [self objectForKey:@"mobileloc_ver"];
+    if (mobileloc_ver==nil)
+        mobileloc_ver=@"";
+    NSString *bkwd_ver = [self objectForKey:@"bkwd_ver"];
+    if (bkwd_ver==nil)
+        bkwd_ver=@"";
+    NSString *hot_ver = [self objectForKey:@"hot_ver"];
+    if (hot_ver==nil)
+        hot_ver=@"";
+    NSString *flag_ver = [self objectForKey:@"flag_ver"];
+    if (flag_ver==nil)
+        flag_ver=@"";
+    NSString *mcc_ver = [self objectForKey:@"mcc_ver"];
+    if (mcc_ver==nil)
+        mcc_ver=@"";
+    NSString *apikey = [self objectForKey:@"apikey"];
+    
+    NSMutableArray *subArray = [self arrayWithSubPassword];
+    
+    NSString *sig = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@", subArray[0], uid, subArray[1], appName, subArray[2], version, subArray[3], inithot_ver, subArray[4], hot_ver, subArray[5], mobileloc_ver, subArray[6], bkwd_ver,subArray[7], flag_ver, subArray[8], mcc_ver, subArray[9], apikey, subArray[10]];
+    NSLog(@"SIG: %@",sig);
+    NSString *sha1String = sha1(sig.UTF8String); //
+    
+    return [sha1String substringWithRange:NSMakeRange(4, 32)];
 }
 - (NSMutableArray *)arrayWithSubPassword {
-  NSRange range[7];
-  range[0] = NSMakeRange(53, 2);
-  range[1] = NSMakeRange(55, 4);
-  range[2] = NSMakeRange(59, 3);
-  range[3] = NSMakeRange(62, 1);
-  range[4] = NSMakeRange(63, 3);
-  range[5] = NSMakeRange(66, 3);
-  range[6] = NSMakeRange(69, 2);
-  
-  NSMutableArray *array = [[NSMutableArray alloc] init];
-  for (int i = 0; i < 7; i++) {
-    NSString *sub = [kPassword substringWithRange:range[i]];
-    [array addObject:sub];
-  }
-  
-  
-  return array;
+    NSRange range[11];
+    range[0] = NSMakeRange(18, 2);
+    range[1] = NSMakeRange(21, 4);
+    range[2] = NSMakeRange(28, 3);
+    range[3] = NSMakeRange(32, 3);
+    range[4] = NSMakeRange(35, 3);
+    range[5] = NSMakeRange(37, 1);
+    range[6] = NSMakeRange(41, 3);
+    range[7] = NSMakeRange(47, 3);
+    range[8] = NSMakeRange(51, 2);
+    range[9] = NSMakeRange(53, 5);
+    range[10] = NSMakeRange(60, 3);
+    
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (int i = 0; i < 11; i++) {
+        NSString *sub = [[DHBSDKApiManager shareManager].signature substringWithRange:range[i]];
+        [array addObject:sub];
+    }
+    return array;
 }
-
 
 
 NSString * sha1(const char *string) {
-  static const NSUInteger LENGTH = 20;
-  unsigned char result[LENGTH];
-  CC_SHA1(string, (CC_LONG)strlen(string), result);
-  
-  char hexResult[2 * LENGTH + 1];
-  hexString(result, hexResult, LENGTH);
-  
-  return [NSString stringWithUTF8String:hexResult];
+    static const NSUInteger LENGTH = 20;
+    unsigned char result[LENGTH];
+    CC_SHA1(string, (CC_LONG)strlen(string), result);
+    
+    char hexResult[2 * LENGTH + 1];
+    hexString(result, hexResult, LENGTH);
+    
+    return [NSString stringWithUTF8String:hexResult];
 }
 
 static inline char hexChar(unsigned char c) {
-  return c < 10 ? '0' + c : 'a' + c - 10;
+    return c < 10 ? '0' + c : 'a' + c - 10;
 }
 
 static inline void hexString(unsigned char *from, char *to, NSUInteger length) {
-  for (NSUInteger i = 0; i < length; ++i) {
-    unsigned char c = from[i];
-    unsigned char cHigh = c >> 4;
-    unsigned char cLow = c & 0xf;
-    to[2 * i] = hexChar(cHigh);
-    to[2 * i + 1] = hexChar(cLow);
-  }
-  to[2 * length] = '\0';
+    for (NSUInteger i = 0; i < length; ++i) {
+        unsigned char c = from[i];
+        unsigned char cHigh = c >> 4;
+        unsigned char cLow = c & 0xf;
+        to[2 * i] = hexChar(cHigh);
+        to[2 * i + 1] = hexChar(cLow);
+    }
+    to[2 * length] = '\0';
 }
 
 @end

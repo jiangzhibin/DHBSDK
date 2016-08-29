@@ -372,7 +372,9 @@ shareGroupIdentifier:(NSString *)shareGroupIdentifier
     
     // 下载
     [[DHBSDKDownloadFetcher sharedInstance] baseDownloadingWithType:packageType updateItem:updateItem progressBlock:^(double progress, long long totalBytes) {
-        progressBlock(progress * kProgressPercentDownload);
+        if (progressBlock) {
+            progressBlock(progress * kProgressPercentDownload);
+        }
     } completionHandler:^(BOOL retry, NSError *error) {
         if (error) {
             if (completionHandler) {
