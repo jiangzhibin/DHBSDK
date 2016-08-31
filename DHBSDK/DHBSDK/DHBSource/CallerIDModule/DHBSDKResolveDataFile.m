@@ -66,7 +66,7 @@
  */
 - (NSInteger)dataFileLength {
     if (_dataFileLength == 0) {
-        fseek(fp, 0,  SEEK_SET);
+        fseek(fp, 0,  SEEK_END);
         //    printf("%ld\n", ftell(fp));
         _dataFileLength = ftell(fp);
         fseek(fp, 0,  SEEK_SET);
@@ -427,7 +427,7 @@
             } else {
                 //NSLog(@"%@ = %d %ld %d",key,partIndex,partPostionStart,byteLength);
                 //NSLog(@"HALF %02x %02x %02x %02x %02x %02x %02x %02x",bytes[0],bytes[1],bytes[2],bytes[3],bytes[4],bytes[5],bytes[6],bytes[7]);
-                long phoneNumberOffset=0;
+                long long phoneNumberOffset=0;
                 if (byteLength<=8) {
                     for (int i = 0;i<byteLength;i++){
                         int hhalf=bytes[i] >> 4;
@@ -467,20 +467,22 @@
     }
 }
 
--(NSString *) buildPhoneNumberWithKey:(NSString*)key numberOffset:(long long)offset phoneNumberLength:(long)length {
+-(NSNumber *) buildPhoneNumberWithKey:(NSString*)key numberOffset:(long long)offset phoneNumberLength:(long)length {
     @autoreleasepool {
-        NSString * phoneNumberOffset=[[NSString alloc] initWithFormat:@"%ld",offset];
+        NSString * phoneNumberOffset=[[NSString alloc] initWithFormat:@"%lld",offset];
         //        NSLog(@"PAD: %ld %@ %@ %ld",length-[phoneNumberOffset length]-[key length],key,phoneNumberOffset,length);
         NSString * leadingZero = @"";
         if (length>[phoneNumberOffset length]+[key length]){
             leadingZero = [@"" stringByPaddingToLength:length-[phoneNumberOffset length]-[key length] withString: @"0" startingAtIndex:0];
         }
+        long long phoneNumber=0;
         if ([[key substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"0"])
         {
-            return [[NSString alloc] initWithFormat:@"86%@%@%@",[key substringFromIndex:1],leadingZero,phoneNumberOffset];
+            phoneNumber = [[[NSString alloc] initWithFormat:@"86%@%@%@",[key substringFromIndex:1],leadingZero,phoneNumberOffset] longLongValue];
         } else {
-            return [[NSString alloc] initWithFormat:@"86%@%@%@",key,leadingZero,phoneNumberOffset];
+            phoneNumber = [[[NSString alloc] initWithFormat:@"86%@%@%@",key,leadingZero,phoneNumberOffset] longLongValue];
         }
+        return [[NSNumber alloc] initWithLongLong:phoneNumber];
     }
 }
 

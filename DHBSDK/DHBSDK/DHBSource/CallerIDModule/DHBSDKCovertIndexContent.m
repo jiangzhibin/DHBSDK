@@ -139,8 +139,9 @@
     [self loadHotCategoryNumbersComplete:^(NSDictionary *hotList) {
         //        dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSArray * hotListKeys=[hotList allKeys];
-        for (NSString * key in hotListKeys){
+        for (NSNumber * key in hotListKeys){
             [list setObject:[hotList objectForKey:key] forKey:key];
+            NSLog(@"HOT: %@ %@",key,[hotList objectForKey:key]);
         }
         //import hot category numbers
         
@@ -155,32 +156,32 @@
         }
         
         int i=0;
-        int SPLIT_SIZE=10000;
+        int SPLIT_SIZE=20000;
         NSString * filePathI=[[NSString alloc] initWithFormat:@"%@%ld",filePath,(long)(i/SPLIT_SIZE)];
         NSMutableDictionary * subList = [[NSMutableDictionary alloc] initWithCapacity:SPLIT_SIZE];
-        
         NSArray * keys = [list allKeys];
-        // 按整型排序
-        keys = [keys sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-            long long num1 = [obj1 longLongValue];
-            long long num2 = [obj2 longLongValue];
-            if (num1 > num2) {
-                return NSOrderedDescending;
+        
+        keys = [keys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            if ([obj1 longLongValue] > [obj2 longLongValue]) {
+                return (NSComparisonResult)NSOrderedDescending;
             }
-            else if (num1 == num2) {
-                return NSOrderedSame;
+            
+            if ([obj1 longLongValue] < [obj2 longLongValue]) {
+                return (NSComparisonResult)NSOrderedAscending;
             }
-            else {
-                return NSOrderedAscending;
-            }
+            return (NSComparisonResult)NSOrderedSame;
         }];
         
-        for (NSString * key in keys)
+        
+        
+        for (NSNumber * key in keys)
         {
             [subList setObject:[self tagLabelFromTagID:[list objectForKey:key]] forKey:key];
+            
             if (i%SPLIT_SIZE==SPLIT_SIZE-1){
-                [subList writeToFile:filePathI atomically:YES];
-                //                NSLog(@"store resolve %d: %@",i,filePathI);
+                NSLog(@"%@",key);
+                [NSKeyedArchiver archiveRootObject:subList toFile:filePathI];
+                //NSLog(@"store resolve %d: %@",i,filePathI);
                 [subList removeAllObjects];
                 filePathI=[[NSString alloc] initWithFormat:@"%@%ld",filePath,(long)((i+1)/SPLIT_SIZE)];
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -190,11 +191,9 @@
             i++;
         }
         if ([[subList allKeys] count]>0){
-            [subList writeToFile:filePathI atomically:YES];
+            [NSKeyedArchiver archiveRootObject:subList toFile:filePathI];
             [subList removeAllObjects];
         }
-        //    });
-        
         
     }];
 }
