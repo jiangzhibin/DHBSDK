@@ -60,31 +60,47 @@
     aNumber = [aNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
     aNumber = [aNumber stringByReplacingOccurrencesOfString:@"#" withString:@""];
     
+    
+    
     NSString * uid = [DHBSDKOpenUDID value];
     NSString *ip = [self getIPAddress];
     NSString * appName = [NSString  stringWithFormat:@"%@.ios", [[[NSBundle mainBundle] infoDictionary]
                                                                  objectForKey:(NSString*)kCFBundleIdentifierKey]];
     NSString *sig = [DHBSDKSignatureHelper flagSignature:aNumber withFlag:flagInfomation withAppname:appName];
+    NSString *query = [NSString stringWithFormat:@"flag/?uid=%@&tel=%@&apikey=%@&sig=%@&uip=%@&flag=%@&app=%@" ,uid, aNumber, [DHBSDKApiManager shareManager].apiKey,sig,ip,flagInfomation, appName ];
+    query = [query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
-    NSDictionary *params = @{@"uid":uid,@"tel":aNumber,@"apikey":[DHBSDKApiManager shareManager].apiKey,@"sig":sig,@"uip":ip,@"flag":flagInfomation,@"app":appName};
+    DHBSDKDLog(@"SDK ------ sig: %@", sig);
+    DHBSDKDLog(@"SDK ------ uid: %@", uid);
+    DHBSDKDLog(@"SDK ------ query: %@", query);
     
-    [[DHBSDKYuloreAPIClient sharedClient] GET:@"flag/" parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        if ([responseObject isKindOfClass:[NSDictionary class]]
-            && [responseObject[@"msg"] isEqualToString:@"Accepted"]) {
-            if (completeBlock) {
-                completeBlock(YES, nil);
-            }
-        }else {
-            NSError *error = [[NSError alloc] initWithDomain:@"CAN NOT MARK" code:10000 userInfo:responseObject];
-            if (completeBlock) {
-                completeBlock(NO, error);
+    [[DHBSDKAPIDotDianHuaDotCNClient sharedClient] GET:query parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        if (responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                DHBSDKDLog(@"SDK ----- response");
+                DHBSDKDLog(@"SDK ------ responseObject : %@", responseObject);
+                
+                if ([responseObject[@"msg"] isEqualToString:@"Accepted"]) {
+                    completeBlock(YES, nil);
+                }
+                else {
+                    NSError *error = [[NSError alloc] initWithDomain:@"CAN NOT MARK" code:10000 userInfo:responseObject];
+                    completeBlock(NO, error);
+                }
             }
         }
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        if (completeBlock) {
-            completeBlock(NO,error);
-        }
+        DHBSDKDLog(@"SDK ------ failure");
+        completeBlock(NO, error);
     }];
+    //  YuloreAFJSONRequestOperation *op = [YuloreAFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id responseObject) {
+    //
+    //
+    //  } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+    //
+    //  }];
+    //  [op start];
+    //
 }
 
 @end
