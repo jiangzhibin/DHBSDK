@@ -77,8 +77,11 @@
         //NSLog(@"Category Item: %@",aCategoryItem);
         NSMutableArray *shopItems__ =[DHBSDKListFetcer executeFectcerFromCategoryJson:aCategoryItem];
         if (shopItems__) {
+            NSLog(@"Shop Item ****");
             for (id aShopItem in shopItems__) {
+                NSLog(@"Shop Item ====");
                 for (id shopItems in [aShopItem allValues]) {
+                    NSLog(@"Shop Item ----");
                     for (id item in shopItems) {
                         if ([item isKindOfClass:[DHBSDKShopItem class]]){
                             DHBSDKShopItem * shopItem = item;
@@ -90,12 +93,14 @@
                                 } else {
                                     label = [[NSString alloc] initWithFormat:@"%@ | %@",shopItem.name,tel.teleDescription];
                                 }
+                                long long phoneNumber=0;
                                 if ([[telNumber substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"0"])
                                 {
-                                    [hotTeleNumberList setObject:label forKey:[[NSString alloc] initWithFormat:@"86%@",[telNumber substringFromIndex:1]]];
+                                    phoneNumber=[[[NSString alloc] initWithFormat:@"86%@",[telNumber substringFromIndex:1]] longLongValue];
                                 } else {
-                                    [hotTeleNumberList setObject:label forKey:[[NSString alloc] initWithFormat:@"86%@",telNumber]];
+                                    phoneNumber=[[[NSString alloc] initWithFormat:@"86%@",telNumber] longLongValue];
                                 }
+                                [hotTeleNumberList setObject:label forKey:[[NSNumber alloc] initWithLongLong:phoneNumber]];
                             }
                         }
                     }
