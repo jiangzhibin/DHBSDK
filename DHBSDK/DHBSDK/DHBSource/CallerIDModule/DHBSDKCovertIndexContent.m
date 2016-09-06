@@ -161,7 +161,7 @@
         }
         
         int i=0;
-        int SPLIT_SIZE=20000;
+        int SPLIT_SIZE=10000;
         NSString * filePathI=[[NSString alloc] initWithFormat:@"%@%ld",filePath,(long)(i/SPLIT_SIZE)];
         NSMutableDictionary * subList = [[NSMutableDictionary alloc] initWithCapacity:SPLIT_SIZE];
         NSArray * keys = [list allKeys];
